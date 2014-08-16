@@ -200,7 +200,18 @@ module RSpec
       end
 
       def diff_message(expected_args, actual_args)
-        RSpec::Support::Differ.new(:color => true).diff(actual_args, expected_args)
+        formatted_expected_args = expected_args.map do |x|
+          if x.respond_to?(:description)
+            x.description
+          else
+            x
+          end
+        end
+        differ.diff(actual_args, formatted_expected_args)
+      end
+
+      def differ
+        RSpec::Support::Differ.new(:color => RSpec::Mocks.configuration.color?)
       end
 
       def intro
