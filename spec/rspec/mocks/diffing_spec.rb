@@ -19,23 +19,27 @@ RSpec.describe "Diffs printed when arguments don't match" do
     reset d
   end
 
+  let(:expected_hash) { {:foo => :bar, :baz => :quz} }
+
+  let(:actual_hash) { {:bad => :hash} }
+
   it "prints a diff with hash args" do
     allow(RSpec::Mocks.configuration).to receive(:color?).and_return(false)
     d = double("double")
-    expect(d).to receive(:foo).with(:foo => :bar, :baz => :quz)
+    expect(d).to receive(:foo).with(expected_hash)
     expect {
       d.foo(:bad => :hash)
-    }.to raise_error(RSpec::Mocks::MockExpectationError,  "Double \"double\" received :foo with unexpected arguments\n  expected: ({:foo=>:bar, :baz=>:quz})\n       got: ({:bad=>:hash}) \n@@ -1,2 +1,2 @@\n-[{:foo=>:bar, :baz=>:quz}]\n+[{:bad=>:hash}]\n")
+    }.to raise_error(RSpec::Mocks::MockExpectationError,  "Double \"double\" received :foo with unexpected arguments\n  expected: (#{expected_hash.inspect})\n       got: (#{actual_hash.inspect}) \n@@ -1,2 +1,2 @@\n-[#{expected_hash.inspect}]\n+[#{actual_hash.inspect}]\n")
     reset d
   end
 
   it "prints a diff with an expected hash arg and a non-hash actual arg" do
     allow(RSpec::Mocks.configuration).to receive(:color?).and_return(false)
     d = double("double")
-    expect(d).to receive(:foo).with(:foo => :bar, :baz => :quz)
+    expect(d).to receive(:foo).with(expected_hash)
     expect {
       d.foo(Object.new)
-    }.to raise_error(RSpec::Mocks::MockExpectationError,  /-\[{:foo=>:bar, :baz=>:quz}\].*\+\[#<Object.*>\]/m)
+    }.to raise_error(RSpec::Mocks::MockExpectationError,  /-\[#{Regexp.escape(expected_hash.inspect)}\].*\+\[#<Object.*>\]/m)
     reset d
   end
 
