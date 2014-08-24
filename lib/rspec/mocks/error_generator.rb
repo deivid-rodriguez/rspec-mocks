@@ -201,7 +201,7 @@ module RSpec
 
       def diff_message(expected_args, actual_args)
         formatted_expected_args = expected_args.map do |x|
-          if x.respond_to?(:description)
+          if RSpec::Support.is_a_matcher?(x)
             x.description
           else
             x
