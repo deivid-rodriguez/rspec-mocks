@@ -61,7 +61,6 @@ module RSpec
       def raise_similar_message_args_error(expectation, *args_for_multiple_calls)
         expected_args = format_args(*expectation.expected_args)
         actual_args = args_for_multiple_calls.map { |a| format_received_args(*a) }.join(", ")
-        actual_args = args_for_multiple_calls.collect {|a| format_received_args(*a)}.join(", ")
         __raise "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}"
       end
 

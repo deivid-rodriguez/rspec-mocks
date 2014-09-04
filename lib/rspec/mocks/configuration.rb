@@ -141,7 +141,6 @@ module RSpec
         end
       end
 
-
       # Monkey-patch `Marshal.dump` to enable dumping of mocked or stubbed
       # objects. By default this will not work since RSpec mocks works by
       # adding singleton methods that cannot be serialized. This patch removes
