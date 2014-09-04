@@ -246,7 +246,7 @@ module RSpec
       end
 
       def arg_has_valid_description(arg)
-        return false unless arg.respond_to?(:description)
+        return false unless RSpec::Support.is_a_matcher?(arg)
 
         !arg.description.nil? && !arg.description.empty?
       end

@@ -52,4 +52,19 @@ RSpec.describe "Diffs printed when arguments don't match" do
     }.to raise_error(RSpec::Mocks::MockExpectationError,  "Double \"double\" received :foo with unexpected arguments\n  expected: ([:a, :b, :c])\n       got: ([]) \n@@ -1,2 +1,2 @@\n-[[:a, :b, :c]]\n+[[]]\n")
     reset d
   end
+
+  it "does not use the object's description for a non-matcher object that implements #description" do
+    allow(RSpec::Mocks.configuration).to receive(:color?).and_return(false)
+    d = double("double")
+
+    #object here because double.description changes the inspect value
+    collab = Object.new.tap {|o| allow(o).to receive(:description).and_return("This string") }
+    collab_inspect = collab.inspect
+
+    expect(d).to receive(:foo).with(collab)
+    expect {
+      d.foo([])
+    }.to raise_error(RSpec::Mocks::MockExpectationError,  "Double \"double\" received :foo with unexpected arguments\n  expected: (#{collab_inspect})\n       got: ([]) \n@@ -1,2 +1,2 @@\n-[#{collab_inspect}]\n+[[]]\n")
+    reset d
+  end
 end
