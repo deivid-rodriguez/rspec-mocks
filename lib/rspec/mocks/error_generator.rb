@@ -200,7 +200,7 @@ module RSpec
 
       def diff_message(expected_args, actual_args)
         formatted_expected_args = expected_args.map do |x|
-          if RSpec::Support.is_a_matcher?(x)
+          if arg_has_valid_description(x)
             x.description
           else
             x
@@ -245,9 +245,7 @@ module RSpec
       end
 
       def arg_has_valid_description(arg)
-        return false unless RSpec::Support.is_a_matcher?(arg)
-
-        !arg.description.nil? && !arg.description.empty?
+        RSpec::Support.is_a_matcher?(arg) && arg.respond_to?(:description)
       end
 
       def format_received_args(*args)
